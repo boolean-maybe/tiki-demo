@@ -1,7 +1,7 @@
 ---
 title: Fix race condition in battery monitoring ISR
 type: bug
-status: in_progress
+status: inProgress
 tags:
     - firmware
     - safety

@@ -7,7 +7,7 @@ statuses:
     label: Ready
     emoji: "\U0001F4CB"
     active: true
-  - key: in_progress
+  - key: inProgress
     label: "In Progress"
     emoji: "\u2699\uFE0F"
     active: true
@@ -33,8 +33,8 @@ views:
         filter: status = 'ready' and type != 'epic'
         action: status = 'ready'
       - name: In Progress
-        filter: status = 'in_progress' and type != 'epic'
-        action: status = 'in_progress'
+        filter: status = 'inProgress' and type != 'epic'
+        action: status = 'inProgress'
       - name: Review
         filter: status = 'review' and type != 'epic'
         action: status = 'review'
@@ -57,6 +57,17 @@ views:
         label: "Add to board"
         action: status = 'ready'
     sort: Priority, ID
+
+  - name: Recent
+    description: "Tasks changed in the last 24 hours, most recent first"
+    foreground: "#f4d6a6"
+    background: "#5a3d1b"
+    key: Ctrl-R
+    lanes:
+      - name: Recent
+        columns: 4
+        filter: NOW - UpdatedAt < 24hours
+    sort: UpdatedAt DESC
 
   - name: Roadmap
     description: "Epics organized by Now, Next, and Later horizons"
@@ -81,4 +92,58 @@ views:
         action: status = 'backlog', priority = 2
     sort: Priority, Points DESC
     view: expanded
+
+  - name: Help
+    description: "Keyboard shortcuts, navigation, and usage guide"
+    type: doki
+    fetcher: internal
+    text: "Help"
+    foreground: "#bcbcbc"
+    background: "#003399"
+    key: "?"
+
+  - name: Docs
+    description: "Project notes and documentation files"
+    type: doki
+    fetcher: file
+    url: "index.md"
+    foreground: "#ff9966"
+    background: "#2b3a42"
+    key: "F2"
+
+triggers:
+  - description: block completion with open dependencies
+    ruki: >
+      before update
+        where new.status = "done" and new.dependsOn any status != "done"
+        deny "cannot complete: has open dependencies"
+  - description: tasks must pass through review before completion
+    ruki: >
+      before update
+        where new.status = "done" and old.status != "review"
+        deny "tasks must go through review before marking done"
+  - description: remove deleted task from dependency lists
+    ruki: >
+      after delete
+        update where old.id in dependsOn set dependsOn=dependsOn - [old.id]
+  - description: clean up completed tasks after 24 hours
+    ruki: >
+      every 1day
+        delete where status = "done" and updatedAt < now() - 1day
+  - description: tasks must have an assignee before starting
+    ruki: >
+      before update
+        where new.status = "inProgress" and new.assignee is empty
+        deny "assign someone before moving to in-progress"
+  - description: auto-complete epics when all child tasks finish
+    ruki: >
+      after update
+        where new.status = "done" and new.type != "epic"
+        update where type = "epic" and new.id in dependsOn and dependsOn all status = "done"
+        set status="done"
+  - description: cannot delete tasks that are actively being worked
+    ruki: >
+      before delete
+        where old.status = "inProgress"
+        deny "cannot delete an in-progress task — move to backlog or done first"
 

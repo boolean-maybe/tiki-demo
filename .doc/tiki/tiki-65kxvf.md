@@ -23,7 +23,7 @@ Multiple services produce and consume telemetry protobufs but there is no schema
 {
   "drone_id": "CX7-0042",
   "mission_id": "MSN-20260315-0819",
-  "status": "in_progress",
+  "status": "inProgress",
   "telemetry": {
     "timestamp": "2026-03-15T08:23:41.003Z",
     "position": {

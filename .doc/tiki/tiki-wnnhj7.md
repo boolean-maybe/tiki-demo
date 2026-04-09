@@ -1,7 +1,7 @@
 ---
 title: Migrate CI pipeline from Jenkins to GitHub Actions
 type: story
-status: in_progress
+status: inProgress
 tags:
     - infrastructure
     - performance

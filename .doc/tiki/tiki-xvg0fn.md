@@ -1,6 +1,6 @@
 ---
 title: "Investigate telemetry timestamp drift on multi-core STM32H7"
-status: in_progress
+status: inProgress
 tags:
   - firmware
   - telemetry

@@ -1,6 +1,6 @@
 ---
 title: "Integrate ground station map with live drone tracks"
-status: in_progress
+status: inProgress
 tags:
   - ground-station
   - telemetry
