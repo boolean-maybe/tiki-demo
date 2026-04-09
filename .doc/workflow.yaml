@@ -23,10 +23,10 @@ statuses:
 views:
   # --- TikiPlugin views ---
   - name: Kanban
-    description: "Active sprint board"
+    description: "Move tiki to new status, search, create or delete"
     default: true
     foreground: "#87ceeb"
-    background: "#1a3a5c"
+    background: "#25496a"
     key: "F1"
     lanes:
       - name: Ready
@@ -44,7 +44,7 @@ views:
     sort: Priority, CreatedAt
 
   - name: Backlog
-    description: "Tasks waiting to be picked up"
+    description: "Tasks waiting to be picked up, sorted by priority"
     foreground: "#5fff87"
     background: "#0b3d2e"
     key: "F3"
