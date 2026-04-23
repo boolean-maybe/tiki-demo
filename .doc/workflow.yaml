@@ -1,8 +1,7 @@
-version: 0.5.0
+version: 0.5.2
 description: |
-  Kanban-style workflow for small-team software work. Five statuses
-  (Backlog → Ready → In Progress → Review → Done) and four task types
-  (Story, Bug, Spike, Epic). Includes an "assign to me" action.
+  Default tiki workflow. A lightweight kanban-style flow with
+  Backlog → Ready → In Progress → Review → Done, plus Story / Bug / Spike / Epic task types.
 statuses:
   - key: backlog
     label: Backlog
@@ -75,6 +74,11 @@ views:
       action: update where id = id() set tags=tags-[input()]
       input: string
       hot: false
+    - key: Ctrl-Q
+      label: "Quick create"
+      action: create title=input()
+      input: string
+      hot: false
   plugins:
     - name: Kanban
       description: "Move tiki to change status, search, create or delete\nShift Left/Right to move"
@@ -104,6 +108,9 @@ views:
         - key: "b"
           label: "Add to board"
           action: update where id = id() set status="ready"
+        - key: "e"
+          label: "Link to epic"
+          action: update where id = choose(select where type = "epic") set dependsOn = dependsOn + id()
     - name: Recent
       description: "Tasks changed in the last 24 hours, most recent first"
       key: Ctrl-R
@@ -131,6 +138,10 @@ views:
           filter: select where type = "epic" and status = "backlog" and priority > 1 order by priority, points desc
           action: update where id = id() set status="backlog" priority=2
       view: expanded
+      actions:
+        - key: "l"
+          label: "Add tiki to epic"
+          action: update where id = id() set dependsOn = dependsOn + choose(select where type != "epic")
     - name: Docs
       description: "Project notes and documentation files"
       type: doki
